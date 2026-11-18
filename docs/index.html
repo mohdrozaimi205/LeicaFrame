@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LEICA FRAME — AI Photography Editor for Android</title>
+<meta name="description" content="Leica-inspired colour, Harcourt-style studio portraits, Xperia-inspired rendering and on-device AI depth portraits. Free Android app.">
+<style>
+  :root{--bg:#000;--ch:#111113;--gr:#1b1b1e;--ln:#2a2a2e;--mu:#8a8a90;--wh:#f4f4f2;--am:#e8a33d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--wh);font:16px/1.6 "Helvetica Neue",Helvetica,Arial,sans-serif}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--ln)}
+  .logo{letter-spacing:.35em;font-size:15px}.logo b{color:var(--am);font-weight:400}
+  nav a{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);text-decoration:none;margin-left:22px}
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;padding:90px 0 70px}
+  h1{font-weight:300;font-size:clamp(38px,5.5vw,64px);line-height:1.05;letter-spacing:-.01em}
+  h1 em{font-style:normal;color:var(--am)}
+  .lead{color:var(--mu);margin:22px 0 34px;max-width:460px}
+  .btn{display:inline-block;background:var(--am);color:#000;text-decoration:none;padding:15px 26px;font-size:12px;letter-spacing:.22em;text-transform:uppercase}
+  .btn.ghost{background:transparent;color:var(--wh);border:1px solid var(--ln);margin-left:10px}
+  .frame{background:#fff;padding:14px 14px 0;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+  .shot{aspect-ratio:4/5;background:
+    radial-gradient(ellipse 30% 26% at 46% 38%,#d9b9a0 0 60%,transparent 62%),
+    radial-gradient(ellipse 46% 38% at 46% 86%,#2b2b30 0 70%,transparent 72%),
+    radial-gradient(circle at 78% 22%,rgba(232,163,61,.55) 0 5%,transparent 6%),
+    radial-gradient(circle at 18% 30%,rgba(255,255,255,.35) 0 4%,transparent 5%),
+    radial-gradient(circle at 84% 60%,rgba(255,255,255,.25) 0 6%,transparent 7%),
+    linear-gradient(160deg,#3a3a40,#0d0d10);filter:saturate(.85)}
+  .plate{display:flex;justify-content:space-between;align-items:center;padding:16px 4px;color:#151515;font-size:12px}
+  .plate b{font-size:14px;letter-spacing:.04em}.plate span{color:#777;font-family:ui-monospace,monospace}
+  section{padding:70px 0;border-top:1px solid var(--ln)}
+  .kicker{font-size:11px;letter-spacing:.3em;color:var(--am);text-transform:uppercase;margin-bottom:14px}
+  h2{font-weight:300;font-size:34px;margin-bottom:34px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ln);border:1px solid var(--ln)}
+  .cell{background:var(--bg);padding:28px}
+  .cell h3{font-weight:400;font-size:17px;margin-bottom:8px}.cell p{color:var(--mu);font-size:14px}
+  .stops{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .stops span{border:1px solid var(--ln);padding:7px 12px;font-family:ui-monospace,monospace;font-size:13px}
+  .stops span:nth-child(3){border-color:var(--am);color:var(--am)}
+  footer{padding:40px 0 60px;color:var(--mu);font-size:12px;border-top:1px solid var(--ln)}
+  @media(max-width:820px){.hero{grid-template-columns:1fr;padding:50px 0}.grid{grid-template-columns:1fr}.btn.ghost{margin:10px 0 0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><div class="logo">LEICA <b>FRAME</b></div>
+    <div><a href="#features">Features</a><a href="https://github.com/mohdrozaimi205/leicaframe">Source</a></div></nav>
+
+  <div class="hero">
+    <div>
+      <div class="kicker">Android · Offline AI</div>
+      <h1>Every photograph<br>deserves a <em>frame.</em></h1>
+      <p class="lead">Leica-inspired colour science, Harcourt-style studio portraits, Xperia-inspired rendering and an on-device AI depth engine that turns any photo into a portrait shot at f/1.4.</p>
+      <a class="btn" href="https://github.com/mohdrozaimi205/leicaframe/releases/latest">Download APK</a>
+      <a class="btn ghost" href="https://github.com/mohdrozaimi205/leicaframe">View source</a>
+    </div>
+    <div class="frame"><div class="shot"></div>
+      <div class="plate"><b>LEICA FRAME</b><span>35mm&nbsp;&nbsp;f/1.4 sim&nbsp;&nbsp;1/250s&nbsp;&nbsp;ISO 100</span></div></div>
+  </div>
+
+  <section id="features">
+    <div class="kicker">What it does</div>
+    <h2>A darkroom in your pocket.</h2>
+    <div class="grid">
+      <div class="cell"><h3>AI Depth Portrait</h3><p>On-device subject segmentation, guided-filter hair edges, per-subject depth and depth-aware lens blur with real bokeh highlights.</p></div>
+      <div class="cell"><h3>Harcourt Studio</h3><p>22 studio looks with directional Rembrandt, butterfly and split lighting placed on detected faces, plus a darkened studio backdrop.</p></div>
+      <div class="cell"><h3>Xperia-inspired</h3><p>Natural colour, Creative Look styles ST · PT · NT · VV · VV2 · FL · FL2 · FL3 · IN · SH, portrait and pro scenes.</p></div>
+      <div class="cell"><h3>Leica-inspired</h3><p>Twelve colour and monochrome profiles built on tone curves, HSL, split-toning and film grain.</p></div>
+      <div class="cell"><h3>AI Enhance</h3><p>Noise reduction, low-light, colour correction, face and skin refinement that keeps real skin texture.</p></div>
+      <div class="cell"><h3>Full-resolution export</h3><p>Original, 2K or 4K. JPEG up to 100% or PNG. Camera EXIF preserved; upscales are labelled honestly.</p></div>
+    </div>
+    <div class="stops"><span>f/1.0</span><span>f/1.2</span><span>f/1.4</span><span>f/1.8</span><span>f/2.0</span><span>f/2.8</span><span>f/4.0</span><span>f/5.6</span><span>f/8.0</span><span>f/11</span></div>
+  </section>
+
+  <footer>Your photos never leave your phone. · Style inspirations only — not affiliated with or endorsed by Leica Camera AG, Sony Group Corporation or Studio Harcourt. · © 2026 mohdrozaimi205</footer>
+</div>
+</body>
+</html>
