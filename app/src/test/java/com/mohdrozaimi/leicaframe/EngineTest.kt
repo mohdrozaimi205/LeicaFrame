@@ -13,9 +13,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.awt.image.BufferedImage
 import java.io.File
-import javax.imageio.ImageIO
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -53,9 +51,13 @@ class EngineTest {
     }
 
     private fun save(img: FloatImage, name: String) {
-        val bi = BufferedImage(img.w, img.h, BufferedImage.TYPE_INT_RGB)
-        bi.setRGB(0, 0, img.w, img.h, img.toArgb(), 0, img.w)
-        ImageIO.write(bi, "png", File(out, "$name.png"))
+        // format PPM (tanpa kebergantungan AWT)
+        val px = img.toArgb()
+        val bytes = ByteArray(px.size * 3)
+        for (i in px.indices) {
+            bytes[i * 3] = (px[i] shr 16).toByte(); bytes[i * 3 + 1] = (px[i] shr 8).toByte(); bytes[i * 3 + 2] = px[i].toByte()
+        }
+        File(out, "$name.ppm").outputStream().use { it.write("P6\n${img.w} ${img.h}\n255\n".toByteArray()); it.write(bytes) }
     }
 
     private fun localVariance(img: FloatImage, x0: Int, y0: Int, size: Int): Float {
