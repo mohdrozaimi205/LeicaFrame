@@ -43,4 +43,4 @@ ai/: Segmenter (ML Kit), DepthEngine, Enhance     export/: PhotoIO (MediaStore, 
 ```
 Suntingan tidak merosakkan gambar asal (non-destructive): gambar asal tidak pernah diubah; semua tetapan adalah parameter.
 
-Min SDK 26 (Android 8.0) · Target SDK 35
+Min SDK 26 (Android 8.0) · Target SDK 35 · Kemas kini automatik dalam app (v1.0.7+)
