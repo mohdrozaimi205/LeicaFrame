@@ -87,7 +87,8 @@ class EngineTest {
             results[f] = localVariance(o, 20, 20, 60)      // latar (atas kiri)
             // subjek mesti kekal tajam
             val subj = localVariance(o, 220, 400, 40); val subj0 = localVariance(img, 220, 400, 40)
-            assertTrue("Subjek mesti kekal tajam pada f/$f", subj > subj0 * 0.85f)
+            println("f/$f bg=${results[f]} subj=$subj subj0=$subj0")
+            assertTrue("Subjek mesti kekal tajam pada f/$f ($subj vs $subj0)", subj > subj0 * 0.85f)
         }
         val v0 = localVariance(img, 20, 20, 60)
         println("Latar variance asal=$v0 hasil=$results")
@@ -115,14 +116,17 @@ class EngineTest {
             look to o
         }
         assertEquals("ID preset mesti unik", Looks.all.size, Looks.all.map { it.id }.toSet().size)
+        val bad = ArrayList<String>()
         for ((look, o) in outs) {
             val d = diff(img, o)
-            assertTrue("${look.name} mesti mengubah imej (d=$d)", d > 0.005f)
+            if (d <= 0.005f) bad += "${look.id} unchanged d=$d"
         }
         for (i in outs.indices) for (j in i + 1 until outs.size) {
             val d = diff(outs[i].second, outs[j].second)
-            assertTrue("${outs[i].first.name} vs ${outs[j].first.name} terlalu serupa (d=$d)", d > 0.0015f)
+            if (d <= 0.0015f) bad += "${outs[i].first.id}~${outs[j].first.id} d=$d"
         }
+        println("LOOK PROBLEMS: $bad")
+        assertTrue(bad.joinToString(), bad.isEmpty())
         listOf("leica_standard", "leica_monochrom", "hc_rembrandt", "cl_fl", "cl_sh", "cl_vv", "fm_cine800t").forEach { id ->
             outs.first { it.first.id == id }.let { save(it.second, "10_look_$id") }
         }
@@ -135,6 +139,7 @@ class EngineTest {
             val o = img.copy()
             StudioLighting.apply(o, mask, emptyList(), StudioLighting.Params(s, 1f, 0.8f))
             save(o, "20_light_${s.name}")
+            println("light $s bg ${o.g[30 * W + 30]} vs ${img.g[30 * W + 30]}  L=${o.g[220 * W + 200]} R=${o.g[220 * W + 280]}")
             assertTrue("Latar mesti digelapkan", o.g[30 * W + 30] < img.g[30 * W + 30] * 0.6f)
             // muka kiri vs kanan berbeza untuk cahaya berarah
             if (s == LightStyle.SPLIT) assertTrue(o.g[220 * W + 200] > o.g[220 * W + 280] * 1.3f)

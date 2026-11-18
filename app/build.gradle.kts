@@ -64,3 +64,11 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
 }
+
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events("failed", "passed", "standard_out")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStandardStreams = true
+    }
+}
