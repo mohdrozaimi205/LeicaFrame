@@ -33,6 +33,15 @@ jobs:
           mkdir -p out
           cp app/build/outputs/apk/release/app-release.apk out/LeicaFrame-v${VERSION_NAME}.apk
 
+      - name: Publish test images
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd app/build && zip -qr test-images.zip test-out || exit 0
+          gh release view test-images >/dev/null 2>&1 || gh release create test-images --prerelease --title "Engine test images" --notes "Output ujian enjin automatik"
+          gh release upload test-images test-images.zip --clobber
+
       - name: Upload test images
         if: always()
         uses: actions/upload-artifact@v4

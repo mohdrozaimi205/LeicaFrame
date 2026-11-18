@@ -65,7 +65,7 @@ object StudioLighting {
                     val px = (x - cx) / fr; val py = (y - cy) / fr
                     val dist = sqrt(px * px + py * py)
                     // komponen ke arah cahaya (positif = menghadap lampu)
-                    val u = -(px * dx + py * dy)
+                    val u = px * dx + py * dy
                     val radial = 1f - smoothstep(0f, 2.6f, dist)
                     val m: Float = when (p.style) {
                         LightStyle.REMBRANDT -> 0.55f * tanh(1.4f * u) + 0.40f * radial - 0.18f

@@ -84,13 +84,13 @@ class EngineTest {
             val o = img.copy()
             DepthEngine.render(o, model, PortraitSettings(enabled = true, aperture = f))
             save(o, "01_portrait_f$f")
-            results[f] = localVariance(o, 20, 20, 60)      // latar (atas kiri)
+            results[f] = localVariance(o, 140, 20, 60)     // latar (tiada titik lampu)
             // subjek mesti kekal tajam
             val subj = localVariance(o, 220, 400, 40); val subj0 = localVariance(img, 220, 400, 40)
             println("f/$f bg=${results[f]} subj=$subj subj0=$subj0")
             assertTrue("Subjek mesti kekal tajam pada f/$f ($subj vs $subj0)", subj > subj0 * 0.85f)
         }
-        val v0 = localVariance(img, 20, 20, 60)
+        val v0 = localVariance(img, 140, 20, 60)
         println("Latar variance asal=$v0 hasil=$results")
         assertTrue(results[1.0f]!! < results[2.8f]!!)
         assertTrue(results[2.8f]!! < results[11f]!!)
