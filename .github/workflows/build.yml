@@ -29,9 +29,18 @@ jobs:
       - name: Build release APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --stacktrace
+          ./gradlew testReleaseUnitTest assembleRelease --stacktrace
           mkdir -p out
           cp app/build/outputs/apk/release/app-release.apk out/LeicaFrame-v${VERSION_NAME}.apk
+
+      - name: Upload test images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: |
+            app/build/test-out/
+            app/build/reports/tests/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

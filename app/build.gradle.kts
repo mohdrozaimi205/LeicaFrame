@@ -17,6 +17,8 @@ android {
         targetSdk = 35
         versionCode = appVersionCode
         versionName = appVersionName
+        // Semua telefon/tablet moden (Samsung A16, Honor 200, Honor Pad X8) = ARM.
+        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }
 
     buildTypes {
@@ -34,7 +36,11 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true }
-    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+    packaging {
+        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+        jniLibs { useLegacyPackaging = true } // mampatkan .so → APK lebih kecil
+    }
+    testOptions { unitTests.isReturnDefaultValues = true }
 }
 
 dependencies {
@@ -55,4 +61,6 @@ dependencies {
     // AI di dalam peranti (offline, model dibundel dalam APK)
     implementation("com.google.mlkit:segmentation-selfie:16.0.0-beta6")
     implementation("com.google.mlkit:face-detection:16.1.7")
+
+    testImplementation("junit:junit:4.13.2")
 }
