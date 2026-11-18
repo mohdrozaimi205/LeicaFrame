@@ -108,7 +108,8 @@ private fun ChipRow(content: @Composable () -> Unit) {
 
 // ============================================================ HOME
 @Composable
-fun HomeScreen(vm: EditorViewModel, go: (Tab) -> Unit) {
+fun HomeScreen(vm: EditorViewModel, onCheckUpdate: () -> Unit, go: (Tab) -> Unit) {
+    val ctxH = LocalContext.current
     val photo by vm.photo.collectAsState()
     val original by vm.original.collectAsState()
     val status by vm.status.collectAsState()
@@ -183,6 +184,12 @@ fun HomeScreen(vm: EditorViewModel, go: (Tab) -> Unit) {
             }
         }
         Spacer(Modifier.height(28.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("v" + com.mohdrozaimi.leicaframe.update.UpdateChecker.currentVersion(ctxH), color = LF.Mute,
+                fontFamily = Mono, fontSize = 12.sp, modifier = Modifier.weight(1f))
+            Chip("Check for updates", false, onCheckUpdate)
+        }
+        Spacer(Modifier.height(12.dp))
         Text("Style inspirations only — not affiliated with or endorsed by Leica, Sony or Studio Harcourt.",
             color = LF.Mute.copy(alpha = 0.6f), fontSize = 10.sp)
     }
@@ -555,6 +562,31 @@ fun BusyOverlay(text: String) {
             CircularProgressIndicator(color = LF.Amber)
             Spacer(Modifier.height(14.dp))
             Label(text, color = LF.White)
+        }
+    }
+}
+
+@Composable
+fun UpdateDialog(info: com.mohdrozaimi.leicaframe.update.UpdateInfo, current: String, onDownload: () -> Unit, onLater: () -> Unit) {
+    Dialog(onDismissRequest = onLater) {
+        Column(Modifier.fillMaxWidth().background(LF.Charcoal).border(1.dp, LF.Amber).padding(22.dp)) {
+            Label("Update available", color = LF.Amber)
+            Spacer(Modifier.height(8.dp))
+            Text("LEICA FRAME v${info.version}", color = LF.White, fontSize = 22.sp, fontWeight = FontWeight.Light)
+            Text("Versi anda: v$current  ·  ${info.sizeBytes / 1_000_000} MB", color = LF.Mute, fontFamily = Mono, fontSize = 12.sp)
+            if (info.notes.isNotBlank()) {
+                Spacer(Modifier.height(10.dp))
+                Text(info.notes, color = LF.Mute, fontSize = 12.sp, lineHeight = 16.sp, maxLines = 6)
+            }
+            Spacer(Modifier.height(18.dp))
+            Box(Modifier.fillMaxWidth().background(LF.Amber).clickable { onDownload() }.padding(14.dp),
+                contentAlignment = Alignment.Center) {
+                Text("MUAT TURUN & PASANG", color = LF.Black, letterSpacing = 2.sp, fontSize = 13.sp)
+            }
+            Spacer(Modifier.height(8.dp))
+            Box(Modifier.fillMaxWidth().clickable { onLater() }.padding(12.dp), contentAlignment = Alignment.Center) {
+                Label("Nanti", color = LF.White)
+            }
         }
     }
 }

@@ -21,13 +21,23 @@ android {
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }
 
+    // Kunci tandatangan TETAP (dari GitHub Secrets) supaya kemas kini boleh dipasang terus atas versi lama.
+    val ksPath = System.getenv("KEYSTORE_PATH")
+    signingConfigs {
+        if (ksPath != null && file(ksPath).exists()) create("release") {
+            storeFile = file(ksPath)
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = "leicaframe"
+            keyPassword = System.getenv("KEYSTORE_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Ditandatangani dengan kunci debug supaya APK terus boleh dipasang.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
     compileOptions {

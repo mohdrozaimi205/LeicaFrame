@@ -26,7 +26,20 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Restore signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > $RUNNER_TEMP/leicaframe.jks
+            echo "KEYSTORE_PATH=$RUNNER_TEMP/leicaframe.jks" >> $GITHUB_ENV
+          else
+            echo "::warning::KEYSTORE_B64 secret belum ditetapkan — APK guna kunci debug sementara"
+          fi
+
       - name: Build release APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           chmod +x gradlew
           ./gradlew testReleaseUnitTest assembleRelease --stacktrace

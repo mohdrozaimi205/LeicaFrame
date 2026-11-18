@@ -64,12 +64,55 @@ import com.mohdrozaimi.leicaframe.ui.Label
 import com.mohdrozaimi.leicaframe.ui.PhotosScreen
 import com.mohdrozaimi.leicaframe.ui.PortraitScreen
 import com.mohdrozaimi.leicaframe.ui.WatermarkScreen
+import com.mohdrozaimi.leicaframe.ui.UpdateDialog
+import com.mohdrozaimi.leicaframe.update.UpdateChecker
+import com.mohdrozaimi.leicaframe.update.UpdateInfo
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
 
     private val vm: EditorViewModel by viewModels()
     private var pendingExport: ExportOptions? = null
+
+    // ---- kemas kini aplikasi
+    private val update = mutableStateOf<UpdateInfo?>(null)
+    private val showUpdate = mutableStateOf(false)
+    private var downloadRequested = false
+
+    private val notifPerm = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        update.value?.let { UpdateChecker.notify(this, it) }
+    }
+
+    fun checkUpdate(manual: Boolean) {
+        lifecycleScope.launch {
+            val info = UpdateChecker.check(this@MainActivity)
+            if (info == null) {
+                if (manual) vm.message("Anda guna versi terkini (v${UpdateChecker.currentVersion(this@MainActivity)}).")
+                return@launch
+            }
+            update.value = info
+            if (downloadRequested) { downloadRequested = false; startDownload(); return@launch }
+            showUpdate.value = true
+            if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(this@MainActivity,
+                    Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notifPerm.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else UpdateChecker.notify(this@MainActivity, info)
+        }
+    }
+
+    fun startDownload() {
+        val info = update.value ?: run { downloadRequested = true; checkUpdate(false); return }
+        showUpdate.value = false
+        UpdateChecker.download(this, info)
+        vm.message("Memuat turun v${info.version}… pemasang akan dibuka bila siap.")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        UpdateChecker.resumePending(this)
+    }
 
     private val storagePerm = registerForActivityResult(ActivityResultContracts.RequestPermission()) { ok ->
         val p = pendingExport
@@ -89,12 +132,23 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleShare(intent)
-        setContent { MaterialTheme(colorScheme = LFColors) { App(vm, ::requestExport) } }
+        if (intent?.getBooleanExtra(UpdateChecker.EXTRA_DOWNLOAD, false) == true) downloadRequested = true
+        setContent {
+            MaterialTheme(colorScheme = LFColors) {
+                App(vm, ::requestExport, onCheckUpdate = { checkUpdate(true) })
+                val info = update.value
+                if (showUpdate.value && info != null) UpdateDialog(info,
+                    current = UpdateChecker.currentVersion(this),
+                    onDownload = ::startDownload, onLater = { showUpdate.value = false })
+            }
+        }
+        checkUpdate(false)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleShare(intent)
+        if (intent.getBooleanExtra(UpdateChecker.EXTRA_DOWNLOAD, false)) startDownload()
     }
 
     private fun handleShare(i: Intent?) {
@@ -114,7 +168,7 @@ enum class Tab(val title: String, val icon: ImageVector) {
 }
 
 @Composable
-fun App(vm: EditorViewModel, onExport: (ExportOptions) -> Unit) {
+fun App(vm: EditorViewModel, onExport: (ExportOptions) -> Unit, onCheckUpdate: () -> Unit = {}) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
     var showExport by rememberSaveable { mutableStateOf(false) }
     val status by vm.status.collectAsState()
@@ -145,7 +199,7 @@ fun App(vm: EditorViewModel, onExport: (ExportOptions) -> Unit) {
             }
             Box(Modifier.weight(1f).fillMaxWidth()) {
                 when (Tab.entries[tab]) {
-                    Tab.HOME -> HomeScreen(vm) { tab = it.ordinal }
+                    Tab.HOME -> HomeScreen(vm, onCheckUpdate) { tab = it.ordinal }
                     Tab.FILTERS -> FiltersScreen(vm)
                     Tab.PORTRAIT -> PortraitScreen(vm)
                     Tab.EDIT -> EditScreen(vm)
