@@ -5,7 +5,7 @@ warna gaya Leica, potret studio gaya Harcourt, rendering gaya Sony Xperia dan **
 
 > Style inspirations only. Not affiliated with, licensed or endorsed by Leica Camera AG, Sony Group or Studio Harcourt. No official logos or presets are used.
 
-**Muat turun APK:** [Releases terkini](https://github.com/mohdrozaimi205/leicaframe/releases/latest) · **Laman web:** https://mohdrozaimi205.github.io/leicaframe/
+**Muat turun APK:** [Releases terkini](https://github.com/mohdrozaimi205/LeicaFrame/releases/latest) · **Laman web:** https://mohdrozaimi205.github.io/LeicaFrame/
 
 ## Ciri
 
